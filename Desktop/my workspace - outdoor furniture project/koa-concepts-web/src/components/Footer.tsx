@@ -1,22 +1,76 @@
+'use client';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
-const linkStyle = { fontFamily: 'DM Sans, sans-serif', fontSize: 15, color: '#EFE7D9', textDecoration: 'none' } as const;
-const mutedStyle = { fontFamily: 'DM Sans, sans-serif', fontSize: 12, color: '#8A7A66', letterSpacing: '0.18em', textTransform: 'uppercase' as const, margin: '0 0 14px' };
+const linkStyle = { fontFamily: 'DM Sans, sans-serif', fontSize: 16.5, color: '#EFE7D9', textDecoration: 'none' } as const;
+const mutedStyle = { fontFamily: 'DM Sans, sans-serif', fontSize: 13, color: '#8A7A66', letterSpacing: '0.18em', textTransform: 'uppercase' as const, margin: '0 0 14px' };
 
 const shopLinks = ['All Products', 'Seating', 'Tables', 'Sets'];
 const infoLinks = [['Our Story', '/story'], ['Shipping & Delivery', '/contact'], ['FAQ', '/contact'], ['Contact', '/contact']];
 
+function PaymentIcons() {
+  return (
+    <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+      <svg width="38" height="24" viewBox="0 0 38 24" style={{ background: '#1A1F71', borderRadius: 4, padding: '3px 5px' }}>
+        <text x="50%" y="16" textAnchor="middle" fontFamily="Arial" fontWeight="bold" fontSize="13" fill="#FFFFFF">VISA</text>
+      </svg>
+      <svg width="38" height="24" viewBox="0 0 38 24" style={{ background: '#252525', borderRadius: 4 }}>
+        <circle cx="14" cy="12" r="8" fill="#EB001B" />
+        <circle cx="24" cy="12" r="8" fill="#F79E1B" />
+        <path d="M19 6.8a8 8 0 0 1 0 10.4A8 8 0 0 1 19 6.8z" fill="#FF5F00" />
+      </svg>
+      <svg width="38" height="24" viewBox="0 0 38 24" style={{ background: '#007BC1', borderRadius: 4, padding: '3px 4px' }}>
+        <text x="50%" y="16" textAnchor="middle" fontFamily="Arial" fontWeight="bold" fontSize="9" fill="#FFFFFF">AMEX</text>
+      </svg>
+      <svg width="38" height="24" viewBox="0 0 38 24" style={{ background: '#000000', borderRadius: 4, padding: '2px 4px' }}>
+        <text x="50%" y="17" textAnchor="middle" fontFamily="Arial" fontWeight="bold" fontSize="8" fill="#FFFFFF">Pay</text>
+      </svg>
+      <svg width="38" height="24" viewBox="0 0 38 24" style={{ background: '#FFFFFF', borderRadius: 4, padding: '3px 5px' }}>
+        <text x="50%" y="16" textAnchor="middle" fontFamily="Arial" fontWeight="bold" fontSize="9" fill="#003087">PayPal</text>
+      </svg>
+    </div>
+  );
+}
+
 export default function Footer() {
+  const logoRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0.7);
+
+  useEffect(() => {
+    const onScroll = () => {
+      if (!logoRef.current) return;
+      const rect = logoRef.current.getBoundingClientRect();
+      const windowH = window.innerHeight;
+      // progress: 0 when bottom of logo enters viewport, 1 when top reaches center
+      const progress = Math.min(1, Math.max(0, (windowH - rect.top) / (windowH + rect.height)));
+      setScale(0.7 + progress * 0.35);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
     <footer style={{ background: '#2E2420' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '64px 24px' }}>
+
+        {/* Big scroll logo */}
+        <div ref={logoRef} style={{ borderBottom: '0.5px solid #4A3E36', marginBottom: 48, paddingBottom: 48, overflow: 'hidden' }}>
+          <Image
+            src="/koa-logo-light.png"
+            alt="Koa Concepts"
+            width={1200}
+            height={120}
+            style={{ width: '100%', height: 'auto', display: 'block', opacity: 0.5, transform: `scale(${scale})`, transformOrigin: 'center center', transition: 'transform 0.1s ease-out' }}
+          />
+        </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 40, marginBottom: 48 }}>
 
           {/* Brand */}
           <div style={{ gridColumn: 'span 2' }}>
-            <Image src="/koa-logo-light.png" alt="Koa Concepts" width={120} height={22} style={{ height: 22, width: 'auto', display: 'block', marginBottom: 16 }} />
+            <Image src="/koa-logo-light.png" alt="Koa Concepts" width={240} height={44} style={{ height: 24, width: 'auto', display: 'block', marginBottom: 16 }} />
             <p style={{ fontFamily: 'DM Serif Display, serif', fontSize: 15, fontStyle: 'italic', color: '#8A7A66', lineHeight: 1.6, maxWidth: 240, margin: '0 0 24px' }}>
               "Furniture for the long exhale."
             </p>
@@ -46,8 +100,9 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div style={{ borderTop: '0.5px solid #4A3E36', paddingTop: 24, display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: 12 }}>
+        <div style={{ borderTop: '0.5px solid #4A3E36', paddingTop: 24, display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 16 }}>
           <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 12, color: '#5C4A38', margin: 0 }}>© 2026 Koa Concepts. All rights reserved.</p>
+          <PaymentIcons />
           <div style={{ display: 'flex', gap: 24 }}>
             {['Privacy Policy', 'Terms'].map(l => (
               <a key={l} href="#" style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 12, color: '#5C4A38', textDecoration: 'none' }}>{l}</a>

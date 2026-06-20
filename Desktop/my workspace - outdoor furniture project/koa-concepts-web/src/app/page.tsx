@@ -26,6 +26,7 @@ const reviews = [
   { quote: 'Finally outdoor furniture that doesn\'t look like every other patio set. Assembled in 45 min.', name: 'Sarah M.', location: 'Honolulu, HI' },
   { quote: 'The quality is way above what I expected at this price. My patio feels like a whole new space.', name: 'James K.', location: 'Kailua, HI' },
   { quote: 'Ordered the bistro set. It arrived flat, assembled easily, and looks stunning on my balcony.', name: 'Priya N.', location: 'San Diego, CA' },
+  { quote: 'The Seville sofa set is exactly what our lanai needed. Solid, beautiful, and ships fast.', name: 'Derek T.', location: 'Maui, HI' },
 ];
 
 export default function Home() {
@@ -159,9 +160,9 @@ export default function Home() {
               You&apos;re on the list. Welcome aboard.
             </p>
           ) : (
-            <form onSubmit={e => { e.preventDefault(); setEmailDone(true); }}
+            <form onSubmit={async e => { e.preventDefault(); const form = e.target as HTMLFormElement; const email = (form.elements.namedItem('email') as HTMLInputElement).value; const res = await fetch('/api/newsletter', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) }); const result = await res.json(); if (!res.ok) { alert('Error: ' + result.error); return; } setEmailDone(true); }}
               style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
-              <input type="email" required placeholder="Your email address"
+              <input type="email" name="email" required placeholder="Your email address"
                 style={{ flex: 1, minWidth: 220, background: 'transparent', border: '1px solid rgba(255,255,255,0.55)', borderRadius: 4, padding: '13px 18px', fontFamily: 'var(--font-sans)', fontSize: 17, color: '#FFFFFF', outline: 'none' }} />
               <button type="submit" className="koa-btn"
                 style={{ background: '#FFFFFF', color: '#2E2420', fontFamily: 'var(--font-sans)', fontSize: 14, fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', padding: '13px 28px', borderRadius: 4, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap', transition: 'opacity .2s' }}>
